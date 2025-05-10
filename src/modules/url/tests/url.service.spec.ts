@@ -2,11 +2,17 @@ import { Test } from '@nestjs/testing';
 import { UrlService } from '../url.service';
 import { DatabaseService } from '../../../database/database.service';
 import { Url } from '@prisma/client';
+import { generateCode } from '../../../common/utils';
+
+jest.mock('../../../common/utils', () => ({
+  generateCode: jest.fn(),
+}));
 
 describe('UrlService', () => {
   const databaseMock = {
     url: {
       findUnique: jest.fn(),
+      create: jest.fn(),
     },
   };
 
@@ -69,6 +75,39 @@ describe('UrlService', () => {
       expect(databaseMock.url.findUnique).toHaveBeenLastCalledWith({
         where: {
           shortened: code,
+        },
+      });
+    });
+  });
+
+  describe('create', () => {
+    it('should return url after create', async () => {
+      const dto = {
+        url: 'valid_original_url',
+      };
+
+      const newUrl: Url = {
+        id: 1,
+        externalId: 'valid_external_id',
+        original: 'valid_original_url',
+        shortened: 'valid_shortened',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      (generateCode as jest.Mock).mockReturnValue(newUrl.shortened);
+      databaseMock.url.create.mockResolvedValue(newUrl);
+
+      const result = await urlService.create(dto);
+
+      expect(result).toEqual(newUrl);
+      expect(result.original).toBe(dto.url);
+      expect(databaseMock.url.create).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.create).toHaveBeenCalledWith({
+        data: {
+          original: dto.url,
+          shortened: newUrl.shortened,
         },
       });
     });

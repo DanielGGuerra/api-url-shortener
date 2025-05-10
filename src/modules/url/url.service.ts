@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { CreateUrlDTO } from './dto/create-url.dto';
 import { Url } from '@prisma/client';
-import nanoId from '../../common/utils/nano-id';
+import { generateCode } from '../../common/utils';
 
 @Injectable()
 export class UrlService {
@@ -19,7 +19,7 @@ export class UrlService {
   }
 
   async create(dto: CreateUrlDTO): Promise<Url> {
-    const shortenedCode = nanoId();
+    const shortenedCode = generateCode();
 
     const shortenedUrl = await this.database.url.create({
       data: {
