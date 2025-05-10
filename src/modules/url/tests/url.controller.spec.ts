@@ -3,6 +3,7 @@ import { UrlController } from '../url.controller';
 import { UrlService } from '../url.service';
 import { Response } from 'express';
 import { NotFoundException } from '@nestjs/common';
+import { ResponseCreateDTO } from '../dto/response-create.dto';
 
 describe('UrlController', () => {
   let urlController: UrlController;
@@ -84,6 +85,39 @@ describe('UrlController', () => {
         originalUrl,
       );
       expect(responseSpy).toHaveBeenCalledTimes(0);
+    });
+  });
+
+  describe('create', () => {
+    it('should create a new shortened URL', async () => {
+      const originalUrl = 'https://example.com';
+      const urlResponse = {
+        id: 1,
+        externalId: 'valid_external_id',
+        original: originalUrl,
+        shortened: 'abc123',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      urlServiceMock.create.mockReturnValue(urlResponse);
+
+      const result = await urlController.create({ url: originalUrl });
+
+      expect(urlServiceMock.create).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.create).toHaveBeenCalledWith({ url: originalUrl });
+      expect(result).toBeInstanceOf(ResponseCreateDTO);
+      expect(result).toEqual({
+        id: urlResponse.id,
+        externalId: urlResponse.externalId,
+        original: urlResponse.original,
+        shortened: urlResponse.shortened,
+        shortenedUrl: `${process.env.BASE_URL}/${urlResponse.shortened}`,
+        createdAt: urlResponse.createdAt,
+        updatedAt: urlResponse.updatedAt,
+        deletedAt: urlResponse.deletedAt,
+      });
     });
   });
 });
