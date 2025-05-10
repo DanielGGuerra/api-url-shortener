@@ -7,4 +7,6 @@ const customNanoId = customAlphabet(
   DEFAULT_SIZE,
 );
 
-export default () => customNanoId(DEFAULT_SIZE);
+export function generateCode() {
+  return customNanoId(DEFAULT_SIZE);
+}
