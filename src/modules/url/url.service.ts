@@ -1,8 +1,8 @@
 import { Injectable } from '@nestjs/common';
-import { DatabaseService } from 'src/database/database.service';
+import { DatabaseService } from '../../database/database.service';
 import { CreateUrlDTO } from './dto/create-url.dto';
 import { Url } from '@prisma/client';
-import nanoId from 'src/common/utils/nano-id';
+import nanoId from '../../common/utils/nano-id';
 
 @Injectable()
 export class UrlService {
