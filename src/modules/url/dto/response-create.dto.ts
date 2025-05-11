@@ -17,6 +17,9 @@ export class ResponseCreateDTO implements Url {
   @Expose()
   shortenedUrl: string;
 
+  @Expose()
+  clicks: number;
+
   @Exclude()
   createdAt: Date;
 

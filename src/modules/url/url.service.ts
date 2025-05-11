@@ -30,4 +30,11 @@ export class UrlService {
 
     return shortenedUrl;
   }
+
+  async incrementClicks(code: string): Promise<void> {
+    await this.database.url.update({
+      where: { shortened: code },
+      data: { clicks: { increment: 1 } },
+    });
+  }
 }

@@ -27,6 +27,8 @@ export class UrlController {
     if (!url) throw new NotFoundException();
 
     response.redirect(url);
+
+    await this.urlService.incrementClicks(shortenedCode);
   }
 
   @Post()
