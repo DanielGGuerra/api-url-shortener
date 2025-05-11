@@ -4,9 +4,10 @@ import { DatabaseModule } from './database/database.module';
 import { UrlModule } from './modules/url/url.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
+import { UserModule } from './modules/user/user.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UrlModule],
+  imports: [ConfigModule.forRoot(), DatabaseModule, UrlModule, UserModule],
   providers: [
     {
       provide: APP_INTERCEPTOR,
