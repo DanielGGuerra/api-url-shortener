@@ -11,6 +11,7 @@ describe('UrlController', () => {
   const urlServiceMock = {
     findOriginalURLByShortenedCode: jest.fn(),
     create: jest.fn(),
+    incrementClicks: jest.fn(),
   };
 
   const responseMock = {
@@ -58,6 +59,10 @@ describe('UrlController', () => {
       );
 
       expect(responseSpy).toHaveBeenCalledWith(validOriginalUrl);
+      expect(urlServiceMock.incrementClicks).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.incrementClicks).toHaveBeenCalledWith(
+        shortenedCode,
+      );
     });
 
     it('should throw error of "not found" if not exists original url', async () => {

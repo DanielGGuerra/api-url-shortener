@@ -13,6 +13,7 @@ describe('UrlService', () => {
     url: {
       findUnique: jest.fn(),
       create: jest.fn(),
+      update: jest.fn(),
     },
   };
 
@@ -111,6 +112,20 @@ describe('UrlService', () => {
           original: dto.url,
           shortened: newUrl.shortened,
         },
+      });
+    });
+  });
+
+  describe('incrementClicks', () => {
+    it('should increment url click counter', async () => {
+      const code = 'valid_shortened_code';
+
+      await urlService.incrementClicks(code);
+
+      expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.update).toHaveBeenCalledWith({
+        where: { shortened: code },
+        data: { clicks: { increment: 1 } },
       });
     });
   });
