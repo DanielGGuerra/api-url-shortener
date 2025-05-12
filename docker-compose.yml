@@ -12,6 +12,43 @@ services:
       - "5432:5432"
     volumes:
       - postgres_data:/var/lib/postgresql/data
+    networks:
+      - url_shortener_network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  api:
+    container_name: url_shortener_api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgres://postgres:postgres@url_shortener_db:5432/url_shortener?schema=public
+      BASE_URL: http://localhost:3000
+      JWT_SECRET: secret
+      JWT_EXPIRATION: 1d
+      JWT_REFRESH_SECRET: secret-refresh
+      JWT_REFRESH_EXPIRATION: 10d
+    networks:
+      - url_shortener_network
+    command: >
+      sh -c "
+      npx prisma migrate deploy && 
+      npx prisma db seed &&
+      npm run start:prod
+      "
+
+networks:
+  url_shortener_network:
+    driver: bridge
 
 volumes:
   postgres_data:
