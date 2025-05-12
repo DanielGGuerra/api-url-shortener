@@ -68,4 +68,11 @@ export class UrlService {
 
     return updatedUrl;
   }
+
+  async delete(code: string): Promise<void> {
+    await this.database.url.update({
+      where: { shortened: code },
+      data: { deletedAt: new Date() },
+    });
+  }
 }

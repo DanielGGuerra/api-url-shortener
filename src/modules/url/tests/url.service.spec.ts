@@ -292,4 +292,14 @@ describe('UrlService', () => {
       });
     });
   });
+
+  describe('delete', () => {
+    it('should delete url', async () => {
+      const code = 'valid_shortened_code';
+
+      await urlService.delete(code);
+
+      expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
+    });
+  });
 });
