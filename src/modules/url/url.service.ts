@@ -38,4 +38,22 @@ export class UrlService {
       data: { clicks: { increment: 1 } },
     });
   }
+
+  async findAll(
+    user: User,
+    take: number,
+    skip: number,
+  ): Promise<{ data: Url[]; total: number }> {
+    const where = { userId: user.id, deletedAt: null };
+
+    const urls = await this.database.url.findMany({
+      where,
+      take,
+      skip,
+    });
+
+    const count = await this.database.url.count({ where });
+
+    return { data: urls, total: count };
+  }
 }

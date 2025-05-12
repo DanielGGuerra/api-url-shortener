@@ -14,6 +14,8 @@ describe('UrlService', () => {
       findUnique: jest.fn(),
       create: jest.fn(),
       update: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
     },
   };
 
@@ -205,6 +207,55 @@ describe('UrlService', () => {
       expect(databaseMock.url.update).toHaveBeenCalledWith({
         where: { shortened: code },
         data: { clicks: { increment: 1 } },
+      });
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all urls', async () => {
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      const take = 10;
+      const skip = 0;
+
+      const urls = [
+        {
+          id: 1,
+          externalId: 'url_external_id',
+          original: 'valid_original_url',
+          shortened: 'valid_shortened',
+          clicks: 0,
+          userId: user.id,
+          createdAt: new Date(),
+          updatedAt: null,
+          deletedAt: null,
+        },
+      ];
+
+      databaseMock.url.findMany.mockResolvedValue(urls);
+      databaseMock.url.count.mockResolvedValue(urls.length);
+
+      const result = await urlService.findAll(user, take, skip);
+
+      expect(result).toEqual({ data: urls, total: urls.length });
+      expect(databaseMock.url.findMany).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findMany).toHaveBeenCalledWith({
+        where: { userId: user.id, deletedAt: null },
+        take,
+        skip,
+      });
+
+      expect(databaseMock.url.count).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.count).toHaveBeenCalledWith({
+        where: { userId: user.id, deletedAt: null },
       });
     });
   });
