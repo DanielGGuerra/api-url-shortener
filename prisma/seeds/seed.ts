@@ -5,13 +5,22 @@ const prisma = new PrismaClient();
 
 async function main() {
   const password = await hashPassword('123456');
+  const email = 'ola@danielgguerra.dev';
 
-  await prisma.user.create({
-    data: {
-      email: 'ola@danielgguerra.dev',
-      password,
+  const isExists = await prisma.user.findUnique({
+    where: {
+      email,
     },
   });
+
+  if (!isExists) {
+    await prisma.user.create({
+      data: {
+        email: 'ola@danielgguerra.dev',
+        password,
+      },
+    });
+  }
 }
 
 main()
