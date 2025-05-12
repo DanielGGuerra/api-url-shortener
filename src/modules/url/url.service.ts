@@ -10,7 +10,7 @@ export class UrlService {
 
   async findOriginalURLByShortenedCode(code: string): Promise<string | null> {
     const url = await this.database.url.findUnique({
-      where: { shortened: code },
+      where: { shortened: code, deletedAt: null },
     });
 
     if (!url) return null;

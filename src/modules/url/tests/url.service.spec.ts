@@ -62,6 +62,36 @@ describe('UrlService', () => {
       expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
         where: {
           shortened: urlExists.shortened,
+          deletedAt: null,
+        },
+      });
+    });
+
+    it('should return null if url is deleted', async () => {
+      const urlExists: Url = {
+        id: 1,
+        externalId: 'valid_external_id',
+        original: 'valid_original_url',
+        shortened: 'valid_shortened',
+        clicks: 0,
+        userId: null,
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: new Date(),
+      };
+
+      databaseMock.url.findUnique.mockResolvedValue(null);
+
+      const result = await urlService.findOriginalURLByShortenedCode(
+        urlExists.shortened,
+      );
+
+      expect(result).toEqual(null);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
+        where: {
+          shortened: urlExists.shortened,
+          deletedAt: null,
         },
       });
     });
@@ -78,6 +108,7 @@ describe('UrlService', () => {
       expect(databaseMock.url.findUnique).toHaveBeenLastCalledWith({
         where: {
           shortened: code,
+          deletedAt: null,
         },
       });
     });
