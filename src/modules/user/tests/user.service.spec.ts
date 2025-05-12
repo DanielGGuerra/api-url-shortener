@@ -14,6 +14,7 @@ describe('UserService', () => {
     user: {
       create: jest.fn(),
       findFirst: jest.fn(),
+      findUnique: jest.fn(),
     },
   };
 
@@ -108,6 +109,49 @@ describe('UserService', () => {
       expect(databaseMock.user.findFirst).toHaveBeenCalledWith({
         where: {
           email,
+          deletedAt: null,
+        },
+      });
+    });
+  });
+
+  describe('findByExternalId', () => {
+    it('should return a user by external id', async () => {
+      const externalId = 'external-123';
+      const expectedUser = {
+        id: 1,
+        externalId,
+        email: 'test@example.com',
+        password: 'hashedPassword123',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      databaseMock.user.findUnique.mockResolvedValue(expectedUser);
+
+      const result = await service.findByExternalId(externalId);
+
+      expect(result).toEqual(expectedUser);
+      expect(databaseMock.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          externalId,
+          deletedAt: null,
+        },
+      });
+    });
+
+    it('should return null when user is not found', async () => {
+      const externalId = 'nonexistent-123';
+
+      databaseMock.user.findUnique.mockResolvedValue(null);
+
+      const result = await service.findByExternalId(externalId);
+
+      expect(result).toBeNull();
+      expect(databaseMock.user.findUnique).toHaveBeenCalledWith({
+        where: {
+          externalId,
           deletedAt: null,
         },
       });

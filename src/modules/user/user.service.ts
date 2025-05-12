@@ -30,4 +30,15 @@ export class UserService {
 
     return user;
   }
+
+  async findByExternalId(externalId: string) {
+    const user = await this.database.user.findUnique({
+      where: {
+        externalId,
+        deletedAt: null,
+      },
+    });
+
+    return user;
+  }
 }
