@@ -2,7 +2,7 @@ import { Exclude, Expose, Type } from 'class-transformer';
 import { ResponseCreateUserDto } from '../../user/dto/response-create-user.dto';
 
 export class LoginResponseDto {
-  @Exclude()
+  @Expose()
   accessToken: string;
 
   @Expose()

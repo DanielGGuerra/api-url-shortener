@@ -29,6 +29,9 @@ export class ResponseCreateDTO implements Url {
   @Exclude()
   deletedAt: Date | null;
 
+  @Exclude()
+  userId: number | null;
+
   constructor(params: Url) {
     Object.keys(this).forEach((prop) => {
       this[prop] = params[prop];

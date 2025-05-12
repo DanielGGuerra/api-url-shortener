@@ -94,13 +94,14 @@ describe('UrlController', () => {
   });
 
   describe('create', () => {
-    it('should create a new shortened URL', async () => {
+    it('should create a new shortened URL without user', async () => {
       const originalUrl = 'https://example.com';
       const urlResponse = {
         id: 1,
         externalId: 'valid_external_id',
         original: originalUrl,
         shortened: 'abc123',
+        userId: null,
         createdAt: new Date(),
         updatedAt: null,
         deletedAt: null,
@@ -108,10 +109,13 @@ describe('UrlController', () => {
 
       urlServiceMock.create.mockReturnValue(urlResponse);
 
-      const result = await urlController.create({ url: originalUrl });
+      const result = await urlController.create({ url: originalUrl }, null);
 
       expect(urlServiceMock.create).toHaveBeenCalledTimes(1);
-      expect(urlServiceMock.create).toHaveBeenCalledWith({ url: originalUrl });
+      expect(urlServiceMock.create).toHaveBeenCalledWith(
+        { url: originalUrl },
+        null,
+      );
       expect(result).toBeInstanceOf(ResponseCreateDTO);
       expect(result).toEqual({
         id: urlResponse.id,
@@ -122,6 +126,52 @@ describe('UrlController', () => {
         createdAt: urlResponse.createdAt,
         updatedAt: urlResponse.updatedAt,
         deletedAt: urlResponse.deletedAt,
+        userId: urlResponse.userId,
+      });
+    });
+
+    it('should create a new shortened URL with user', async () => {
+      const originalUrl = 'https://example.com';
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+      const urlResponse = {
+        id: 1,
+        externalId: 'valid_external_id',
+        original: originalUrl,
+        shortened: 'abc123',
+        userId: user.id,
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      urlServiceMock.create.mockReturnValue(urlResponse);
+
+      const result = await urlController.create({ url: originalUrl }, user);
+
+      expect(urlServiceMock.create).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.create).toHaveBeenCalledWith(
+        { url: originalUrl },
+        user,
+      );
+      expect(result).toBeInstanceOf(ResponseCreateDTO);
+      expect(result).toEqual({
+        id: urlResponse.id,
+        externalId: urlResponse.externalId,
+        original: urlResponse.original,
+        shortened: urlResponse.shortened,
+        shortenedUrl: `${process.env.BASE_URL}/${urlResponse.shortened}`,
+        createdAt: urlResponse.createdAt,
+        updatedAt: urlResponse.updatedAt,
+        deletedAt: urlResponse.deletedAt,
+        userId: urlResponse.userId,
       });
     });
   });

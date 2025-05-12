@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { CreateUrlDTO } from './dto/create-url.dto';
-import { Url } from '@prisma/client';
+import { Url, User } from '@prisma/client';
 import { generateCode } from '../../common/utils';
 
 @Injectable()
@@ -18,13 +18,14 @@ export class UrlService {
     return url.original;
   }
 
-  async create(dto: CreateUrlDTO): Promise<Url> {
+  async create(dto: CreateUrlDTO, user: User | null): Promise<Url> {
     const shortenedCode = generateCode();
 
     const shortenedUrl = await this.database.url.create({
       data: {
         original: dto.url,
         shortened: shortenedCode,
+        userId: user?.id || null,
       },
     });
 
