@@ -5,6 +5,7 @@ import {
   NotFoundException,
   Param,
   ParseIntPipe,
+  Patch,
   Post,
   Query,
   Res,
@@ -19,6 +20,7 @@ import { GetUser } from '../../common/decorators/get-user.decorator';
 import { User } from '@prisma/client';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
 import { ResponseFindAllDTO } from './dto/response-find-all.dto';
+import { UpdateUrlDTO } from './dto/update-url.dto';
 
 @Controller('')
 export class UrlController {
@@ -62,5 +64,16 @@ export class UrlController {
     const { data, total } = await this.urlService.findAll(user, take, skip);
 
     return new ResponseFindAllDTO(data, total, page);
+  }
+
+  @Patch('/:shortenedCode')
+  @UseGuards(JwtAuthGuard)
+  async update(
+    @Param('shortenedCode') shortenedCode: string,
+    @Body() dto: UpdateUrlDTO,
+    @GetUser() user: User,
+  ) {
+    const updated = await this.urlService.update(shortenedCode, dto, user);
+    return new ResponseCreateDTO(updated);
   }
 }

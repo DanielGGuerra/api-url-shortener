@@ -15,6 +15,7 @@ describe('UrlController', () => {
     create: jest.fn(),
     incrementClicks: jest.fn(),
     findAll: jest.fn(),
+    update: jest.fn(),
   };
 
   const responseMock = {
@@ -220,6 +221,60 @@ describe('UrlController', () => {
         total: urls.length,
         totalPages: Math.ceil(urls.length / limit),
         page,
+      });
+    });
+  });
+
+  describe('update', () => {
+    it('should update a shortened URL', async () => {
+      const shortenedCode = 'abc123';
+      const originalUrl = 'https://example.com/updated';
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      const urlResponse = {
+        id: 1,
+        externalId: 'valid_external_id',
+        original: originalUrl,
+        shortened: shortenedCode,
+        userId: user.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      urlServiceMock.update.mockReturnValue(urlResponse);
+
+      const result = await urlController.update(
+        shortenedCode,
+        { url: originalUrl },
+        user,
+      );
+
+      expect(urlServiceMock.update).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.update).toHaveBeenCalledWith(
+        shortenedCode,
+        { url: originalUrl },
+        user,
+      );
+      expect(result).toBeInstanceOf(ResponseCreateDTO);
+      expect(result).toEqual({
+        id: urlResponse.id,
+        externalId: urlResponse.externalId,
+        original: urlResponse.original,
+        shortened: urlResponse.shortened,
+        shortenedUrl: `${process.env.BASE_URL}/${urlResponse.shortened}`,
+        createdAt: urlResponse.createdAt,
+        updatedAt: urlResponse.updatedAt,
+        deletedAt: urlResponse.deletedAt,
+        userId: urlResponse.userId,
       });
     });
   });
