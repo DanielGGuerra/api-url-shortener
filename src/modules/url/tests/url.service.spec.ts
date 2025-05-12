@@ -307,9 +307,23 @@ describe('UrlService', () => {
     it('should delete url', async () => {
       const code = 'valid_shortened_code';
 
-      await urlService.delete(code);
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      await urlService.delete(code, user);
 
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.update).toHaveBeenCalledWith({
+        where: { shortened: code, userId: user.id },
+        data: { deletedAt: new Date() },
+      });
     });
   });
 });
