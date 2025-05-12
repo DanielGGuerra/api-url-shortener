@@ -16,6 +16,7 @@ describe('UrlController', () => {
     incrementClicks: jest.fn(),
     findAll: jest.fn(),
     update: jest.fn(),
+    delete: jest.fn(),
   };
 
   const responseMock = {
@@ -276,6 +277,28 @@ describe('UrlController', () => {
         deletedAt: urlResponse.deletedAt,
         userId: urlResponse.userId,
       });
+    });
+  });
+
+  describe('delete', () => {
+    it('should delete a shortened URL', async () => {
+      const shortenedCode = 'abc123';
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      urlServiceMock.delete.mockResolvedValue(undefined);
+
+      await urlController.delete(shortenedCode, user);
+
+      expect(urlServiceMock.delete).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.delete).toHaveBeenCalledWith(shortenedCode, user);
     });
   });
 });

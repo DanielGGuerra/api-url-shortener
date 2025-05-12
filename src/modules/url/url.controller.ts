@@ -1,6 +1,7 @@
 import {
   Body,
   Controller,
+  Delete,
   Get,
   NotFoundException,
   Param,
@@ -75,5 +76,14 @@ export class UrlController {
   ) {
     const updated = await this.urlService.update(shortenedCode, dto, user);
     return new ResponseCreateDTO(updated);
+  }
+
+  @Delete('/:shortenedCode')
+  @UseGuards(JwtAuthGuard)
+  async delete(
+    @Param('shortenedCode') shortenedCode: string,
+    @GetUser() user: User,
+  ) {
+    await this.urlService.delete(shortenedCode, user);
   }
 }
