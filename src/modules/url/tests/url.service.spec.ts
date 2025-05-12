@@ -262,7 +262,7 @@ describe('UrlService', () => {
 
   describe('update', () => {
     it('should update url', async () => {
-      const code = 'valid_shortened_code';
+      const id = 'valid_external_id';
       const dto = {
         url: 'updated_original_url',
       };
@@ -279,7 +279,7 @@ describe('UrlService', () => {
 
       const updatedUrl: Url = {
         id: 1,
-        externalId: 'url_external_id',
+        externalId: id,
         original: 'updated_original_url',
         shortened: 'valid_shortened',
         clicks: 0,
@@ -291,13 +291,13 @@ describe('UrlService', () => {
 
       databaseMock.url.update.mockResolvedValue(updatedUrl);
 
-      const result = await urlService.update(code, dto, user);
+      const result = await urlService.update(id, dto, user);
 
       expect(result).toEqual(updatedUrl);
       expect(result.original).toBe(dto.url);
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
       expect(databaseMock.url.update).toHaveBeenCalledWith({
-        where: { shortened: code, userId: user.id },
+        where: { externalId: id, userId: user.id },
         data: { original: dto.url },
       });
     });
@@ -305,7 +305,7 @@ describe('UrlService', () => {
 
   describe('delete', () => {
     it('should delete url', async () => {
-      const code = 'valid_shortened_code';
+      const id = 'valid_external_id';
 
       const user = {
         id: 1,
@@ -317,11 +317,11 @@ describe('UrlService', () => {
         deletedAt: null,
       };
 
-      await urlService.delete(code, user);
+      await urlService.delete(id, user);
 
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
       expect(databaseMock.url.update).toHaveBeenCalledWith({
-        where: { shortened: code, userId: user.id },
+        where: { externalId: id, userId: user.id },
         data: { deletedAt: new Date() },
       });
     });

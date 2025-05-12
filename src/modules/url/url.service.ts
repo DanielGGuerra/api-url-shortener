@@ -58,9 +58,9 @@ export class UrlService {
     return { data: urls, total: count };
   }
 
-  async update(code: string, dto: UpdateUrlDTO, user: User): Promise<Url> {
+  async update(id: string, dto: UpdateUrlDTO, user: User): Promise<Url> {
     const updatedUrl = await this.database.url.update({
-      where: { shortened: code, userId: user.id },
+      where: { externalId: id, userId: user.id },
       data: {
         original: dto.url,
       },
@@ -69,9 +69,9 @@ export class UrlService {
     return updatedUrl;
   }
 
-  async delete(code: string, user: User): Promise<void> {
+  async delete(id: string, user: User): Promise<void> {
     await this.database.url.update({
-      where: { shortened: code, userId: user.id },
+      where: { externalId: id, userId: user.id },
       data: { deletedAt: new Date() },
     });
   }

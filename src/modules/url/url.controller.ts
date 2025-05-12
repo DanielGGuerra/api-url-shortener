@@ -67,23 +67,20 @@ export class UrlController {
     return new ResponseFindAllDTO(data, total, page);
   }
 
-  @Patch('/:shortenedCode')
+  @Patch('/:id')
   @UseGuards(JwtAuthGuard)
   async update(
-    @Param('shortenedCode') shortenedCode: string,
+    @Param('id') id: string,
     @Body() dto: UpdateUrlDTO,
     @GetUser() user: User,
   ) {
-    const updated = await this.urlService.update(shortenedCode, dto, user);
+    const updated = await this.urlService.update(id, dto, user);
     return new ResponseCreateDTO(updated);
   }
 
-  @Delete('/:shortenedCode')
+  @Delete('/:id')
   @UseGuards(JwtAuthGuard)
-  async delete(
-    @Param('shortenedCode') shortenedCode: string,
-    @GetUser() user: User,
-  ) {
-    await this.urlService.delete(shortenedCode, user);
+  async delete(@Param('id') id: string, @GetUser() user: User) {
+    await this.urlService.delete(id, user);
   }
 }

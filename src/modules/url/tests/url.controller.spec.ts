@@ -228,7 +228,7 @@ describe('UrlController', () => {
 
   describe('update', () => {
     it('should update a shortened URL', async () => {
-      const shortenedCode = 'abc123';
+      const id = 'valid_external_id';
       const originalUrl = 'https://example.com/updated';
       const user = {
         id: 1,
@@ -242,9 +242,9 @@ describe('UrlController', () => {
 
       const urlResponse = {
         id: 1,
-        externalId: 'valid_external_id',
+        externalId: id,
         original: originalUrl,
-        shortened: shortenedCode,
+        shortened: 'abc123',
         userId: user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
@@ -253,15 +253,11 @@ describe('UrlController', () => {
 
       urlServiceMock.update.mockReturnValue(urlResponse);
 
-      const result = await urlController.update(
-        shortenedCode,
-        { url: originalUrl },
-        user,
-      );
+      const result = await urlController.update(id, { url: originalUrl }, user);
 
       expect(urlServiceMock.update).toHaveBeenCalledTimes(1);
       expect(urlServiceMock.update).toHaveBeenCalledWith(
-        shortenedCode,
+        id,
         { url: originalUrl },
         user,
       );
@@ -282,7 +278,7 @@ describe('UrlController', () => {
 
   describe('delete', () => {
     it('should delete a shortened URL', async () => {
-      const shortenedCode = 'abc123';
+      const id = 'valid_external_id';
       const user = {
         id: 1,
         externalId: 'user_external_id',
@@ -295,10 +291,10 @@ describe('UrlController', () => {
 
       urlServiceMock.delete.mockResolvedValue(undefined);
 
-      await urlController.delete(shortenedCode, user);
+      await urlController.delete(id, user);
 
       expect(urlServiceMock.delete).toHaveBeenCalledTimes(1);
-      expect(urlServiceMock.delete).toHaveBeenCalledWith(shortenedCode, user);
+      expect(urlServiceMock.delete).toHaveBeenCalledWith(id, user);
     });
   });
 });
