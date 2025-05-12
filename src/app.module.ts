@@ -5,9 +5,16 @@ import { UrlModule } from './modules/url/url.module';
 import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TransformInterceptor } from './common/interceptors/transform.interceptor';
 import { UserModule } from './modules/user/user.module';
+import { AuthModule } from './modules/auth/auth.module';
 
 @Module({
-  imports: [ConfigModule.forRoot(), DatabaseModule, UrlModule, UserModule],
+  imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
+    DatabaseModule,
+    UrlModule,
+    UserModule,
+    AuthModule,
+  ],
   providers: [
     {
       provide: APP_INTERCEPTOR,
