@@ -3,6 +3,7 @@ import { UrlService } from '../url.service';
 import { DatabaseService } from '../../../database/database.service';
 import { Url } from '@prisma/client';
 import { generateCode } from '../../../common/utils';
+import { NotFoundException } from '@nestjs/common';
 
 jest.mock('../../../common/utils', () => ({
   generateCode: jest.fn(),
@@ -277,29 +278,69 @@ describe('UrlService', () => {
         deletedAt: null,
       };
 
-      const updatedUrl: Url = {
+      const existingUrl: Url = {
         id: 1,
         externalId: id,
-        original: 'updated_original_url',
+        original: 'original_url',
         shortened: 'valid_shortened',
         clicks: 0,
         userId: user.id,
         createdAt: new Date(),
-        updatedAt: new Date(),
+        updatedAt: null,
         deletedAt: null,
       };
 
+      const updatedUrl: Url = {
+        ...existingUrl,
+        original: 'updated_original_url',
+        updatedAt: new Date(),
+      };
+
+      databaseMock.url.findUnique.mockResolvedValue(existingUrl);
       databaseMock.url.update.mockResolvedValue(updatedUrl);
 
       const result = await urlService.update(id, dto, user);
 
       expect(result).toEqual(updatedUrl);
       expect(result.original).toBe(dto.url);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
+        where: { externalId: id, userId: user.id, deletedAt: null },
+      });
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
       expect(databaseMock.url.update).toHaveBeenCalledWith({
-        where: { externalId: id, userId: user.id },
+        where: { externalId: id, userId: user.id, deletedAt: null },
         data: { original: dto.url },
       });
+    });
+
+    it('should throw NotFoundException if url does not exist', async () => {
+      const id = 'invalid_external_id';
+      const dto = {
+        url: 'updated_original_url',
+      };
+
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      databaseMock.url.findUnique.mockResolvedValue(null);
+
+      await expect(urlService.update(id, dto, user)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(databaseMock.url.findUnique).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
+        where: { externalId: id, userId: user.id, deletedAt: null },
+      });
+      expect(databaseMock.url.update).not.toHaveBeenCalled();
     });
   });
 
@@ -317,13 +358,61 @@ describe('UrlService', () => {
         deletedAt: null,
       };
 
+      const existingUrl: Url = {
+        id: 1,
+        externalId: id,
+        original: 'original_url',
+        shortened: 'valid_shortened',
+        clicks: 0,
+        userId: user.id,
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      databaseMock.url.findUnique.mockResolvedValue(existingUrl);
+      databaseMock.url.update.mockResolvedValue({
+        ...existingUrl,
+        deletedAt: new Date(),
+      });
+
       await urlService.delete(id, user);
 
+      expect(databaseMock.url.findUnique).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
+        where: { externalId: id, userId: user.id, deletedAt: null },
+      });
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
       expect(databaseMock.url.update).toHaveBeenCalledWith({
-        where: { externalId: id, userId: user.id },
+        where: { externalId: id, userId: user.id, deletedAt: null },
         data: { deletedAt: new Date() },
       });
+    });
+
+    it('should throw NotFoundException if url does not exist', async () => {
+      const id = 'invalid_external_id';
+
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      databaseMock.url.findUnique.mockResolvedValue(null);
+
+      await expect(urlService.delete(id, user)).rejects.toThrow(
+        NotFoundException,
+      );
+
+      expect(databaseMock.url.findUnique).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.findUnique).toHaveBeenCalledWith({
+        where: { externalId: id, userId: user.id, deletedAt: null },
+      });
+      expect(databaseMock.url.update).not.toHaveBeenCalled();
     });
   });
 });

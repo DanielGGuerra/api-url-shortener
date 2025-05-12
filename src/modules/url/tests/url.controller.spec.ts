@@ -274,6 +274,33 @@ describe('UrlController', () => {
         userId: urlResponse.userId,
       });
     });
+
+    it('should throw NotFoundException if url does not exist', async () => {
+      const id = 'invalid_external_id';
+      const originalUrl = 'https://example.com/updated';
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      urlServiceMock.update.mockRejectedValue(new NotFoundException());
+
+      await expect(
+        urlController.update(id, { url: originalUrl }, user),
+      ).rejects.toThrow(NotFoundException);
+
+      expect(urlServiceMock.update).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.update).toHaveBeenCalledWith(
+        id,
+        { url: originalUrl },
+        user,
+      );
+    });
   });
 
   describe('delete', () => {
@@ -292,6 +319,28 @@ describe('UrlController', () => {
       urlServiceMock.delete.mockResolvedValue(undefined);
 
       await urlController.delete(id, user);
+
+      expect(urlServiceMock.delete).toHaveBeenCalledTimes(1);
+      expect(urlServiceMock.delete).toHaveBeenCalledWith(id, user);
+    });
+
+    it('should throw NotFoundException if url does not exist', async () => {
+      const id = 'invalid_external_id';
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      urlServiceMock.delete.mockRejectedValue(new NotFoundException());
+
+      await expect(urlController.delete(id, user)).rejects.toThrow(
+        NotFoundException,
+      );
 
       expect(urlServiceMock.delete).toHaveBeenCalledTimes(1);
       expect(urlServiceMock.delete).toHaveBeenCalledWith(id, user);

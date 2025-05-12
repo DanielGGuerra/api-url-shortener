@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DatabaseService } from '../../database/database.service';
 import { CreateUrlDTO } from './dto/create-url.dto';
 import { Url, User } from '@prisma/client';
@@ -59,8 +59,14 @@ export class UrlService {
   }
 
   async update(id: string, dto: UpdateUrlDTO, user: User): Promise<Url> {
+    const isExists = await this.database.url.findUnique({
+      where: { externalId: id, userId: user.id, deletedAt: null },
+    });
+
+    if (!isExists) throw new NotFoundException();
+
     const updatedUrl = await this.database.url.update({
-      where: { externalId: id, userId: user.id },
+      where: { externalId: id, userId: user.id, deletedAt: null },
       data: {
         original: dto.url,
       },
@@ -70,8 +76,14 @@ export class UrlService {
   }
 
   async delete(id: string, user: User): Promise<void> {
+    const isExists = await this.database.url.findUnique({
+      where: { externalId: id, userId: user.id, deletedAt: null },
+    });
+
+    if (!isExists) throw new NotFoundException();
+
     await this.database.url.update({
-      where: { externalId: id, userId: user.id },
+      where: { externalId: id, userId: user.id, deletedAt: null },
       data: { deletedAt: new Date() },
     });
   }
