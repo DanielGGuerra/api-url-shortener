@@ -1,0 +1,302 @@
+type: collection.insomnia.rest/5.0
+name: Teddy
+meta:
+  id: wrk_a7ef8b5a95e343be90beb9eeb1112b12
+  created: 1746852126228
+  modified: 1747069400989
+collection:
+  - name: url
+    meta:
+      id: fld_ed1ab415f5744a538fa0ec931d59abe3
+      created: 1746852148331
+      modified: 1746852148331
+      sortKey: -1746852148331
+    children:
+      - url: "{{ _.baseUrl }}"
+        name: create - with auth
+        meta:
+          id: req_457b604f85ea4f7685c9b68c341939e1
+          created: 1746852151200
+          modified: 1747074241925
+          isPrivate: false
+          sortKey: -1746852151200
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"url": "https://www.danielgguerra.dev/"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_bddd5184889c46f7bd88e179ee7272d4
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_32294182f95e4cb192d34e842817ab40
+          - id: pair_2d13612dc73141768ef5c2f2459019af
+            name: authorization
+            value: "{{ _.type_token }} {{ _.token }}"
+            disabled: false
+        authentication:
+          type: none
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}"
+        name: findAll
+        meta:
+          id: req_16d9f7331a6745c3a5e4cc308405518a
+          created: 1747067512186
+          modified: 1747069585247
+          isPrivate: false
+          sortKey: -1746852151100
+        method: GET
+        parameters:
+          - id: pair_24e87161335d4fa29af5c37ad1054d9d
+            name: page
+            value: "1"
+            disabled: false
+          - id: pair_47bea73bd4f043799ea81eff37283d96
+            name: limit
+            value: "10"
+            disabled: false
+        headers:
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_cb6757c5381a4f99856cedb736c6bed8
+          - id: pair_b51fe92343bb46a695ee3aa7ba34f38f
+            name: authorization
+            value: "{{ _.type_token }} {{ _.token }}"
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/cmalewver0003s63auhqxcdjv"
+        name: update
+        meta:
+          id: req_abade2ee5b6f4ea0ad1ad3b4de95c8b7
+          created: 1747068833706
+          modified: 1747074315472
+          isPrivate: false
+          sortKey: -1746701447104.5
+        method: PATCH
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"url": "https://www.danielgguerra2.dev/"
+            }
+        parameters:
+          - id: pair_24e87161335d4fa29af5c37ad1054d9d
+            name: page
+            value: "1"
+            disabled: false
+          - id: pair_47bea73bd4f043799ea81eff37283d96
+            name: limit
+            value: "10"
+            disabled: false
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_a00d29d5ad50498c8d98ae5d096e0762
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_cb6757c5381a4f99856cedb736c6bed8
+          - id: pair_b51fe92343bb46a695ee3aa7ba34f38f
+            name: authorization
+            value: "{{ _.type_token }} {{ _.token }}"
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}/cmalewver0003s63auhqxcdjv"
+        name: delete
+        meta:
+          id: req_ac18bb9286e74cdb859f90cb5baa19f7
+          created: 1747068958168
+          modified: 1747074346350
+          isPrivate: false
+          sortKey: -1746626095106.75
+        method: DELETE
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"url": "https://www.danielgguerra.dev/"
+            }
+        parameters:
+          - id: pair_24e87161335d4fa29af5c37ad1054d9d
+            name: page
+            value: "1"
+            disabled: false
+          - id: pair_47bea73bd4f043799ea81eff37283d96
+            name: limit
+            value: "10"
+            disabled: false
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_a00d29d5ad50498c8d98ae5d096e0762
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_cb6757c5381a4f99856cedb736c6bed8
+          - id: pair_b51fe92343bb46a695ee3aa7ba34f38f
+            name: authorization
+            value: "{{ _.type_token }} {{ _.token }}"
+            disabled: false
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+      - url: "{{ _.baseUrl }}"
+        name: create - no auth
+        meta:
+          id: req_8f83464a2267415a888e845fa08011e4
+          created: 1747069363365
+          modified: 1747074367428
+          isPrivate: false
+          sortKey: -1746852151150
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"url": "https://www.danielgguerra.dev/"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+            id: pair_bddd5184889c46f7bd88e179ee7272d4
+          - name: User-Agent
+            value: insomnia/11.1.0
+            id: pair_32294182f95e4cb192d34e842817ab40
+        authentication:
+          type: bearer
+          token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFsNDQ5b2gwMDAwdndjNXcycjh5MmltIiwiZW1haWwiOiJvbGFAZGFuaWVsZ2d1ZXJyYS5kZXYiLCJpYXQiOjE3NDcwNTY0MDksImV4cCI6MTc0NzkyMDQwOX0.irrdfU6beKN_MdMHl2wNFWQTOv_Fx0WEGebHv8sx4ow
+          disabled: true
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: user
+    meta:
+      id: fld_49e7afec039a4785822dbfd32c74a56c
+      created: 1747003926751
+      modified: 1747003926751
+      sortKey: -1747003926751
+    children:
+      - url: "{{ _.baseUrl }}/users"
+        name: create
+        meta:
+          id: req_951e9e3e6db040b18d6ecf3ce0593d93
+          created: 1747003930012
+          modified: 1747074219437
+          isPrivate: false
+          sortKey: -1747003930012
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "hi@danielgguerra.dev",
+            	"password": "Hi!00x00"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+  - name: Auth
+    meta:
+      id: fld_c9b0f548274047bfbd7284e827a85d44
+      created: 1747055318824
+      modified: 1747055318824
+      sortKey: -1747055318824
+    children:
+      - url: "{{ _.baseUrl }}/auth/login"
+        name: login
+        meta:
+          id: req_fd4c26ab621b42a3baebe11d20254948
+          created: 1747055321915
+          modified: 1747073814745
+          isPrivate: false
+          sortKey: -1747055321915
+        method: POST
+        body:
+          mimeType: application/json
+          text: |-
+            {
+            	"email": "ola@danielgguerra.dev",
+            	"password": "123456"
+            }
+        headers:
+          - name: Content-Type
+            value: application/json
+          - name: User-Agent
+            value: insomnia/11.1.0
+        settings:
+          renderRequestBody: true
+          encodeUrl: true
+          followRedirects: global
+          cookies:
+            send: true
+            store: true
+          rebuildPath: true
+cookieJar:
+  name: Default Jar
+  meta:
+    id: jar_3bbd341753d3e3eb4022558c535453b447d969f3
+    created: 1746852126231
+    modified: 1746852126231
+environments:
+  name: Base Environment
+  meta:
+    id: env_3bbd341753d3e3eb4022558c535453b447d969f3
+    created: 1746852126229
+    modified: 1746852126229
+    isPrivate: false
+  subEnvironments:
+    - name: dev
+      meta:
+        id: env_1a91dfd217ed4531b1a14f5c3730d9f7
+        created: 1747069411613
+        modified: 1747074266160
+        isPrivate: false
+        sortKey: 1747069411613
+      data:
+        baseUrl: http://localhost:3000
+        token: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJjbWFsZXVxMnowMDAwczYyNjZkZjBvZ3F4IiwiZW1haWwiOiJvbGFAZGFuaWVsZ2d1ZXJyYS5kZXYiLCJpYXQiOjE3NDcwNzQyNTQsImV4cCI6MTc0NzE2MDY1NH0.ooGDFQ5kN-ZN7J-WE2x-0Ww39h163XvgjQPQkKQ0RO8
+        type_token: Bearer
+      color: "#ff8800"
