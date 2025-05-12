@@ -58,9 +58,9 @@ export class UrlService {
     return { data: urls, total: count };
   }
 
-  async update(code: string, dto: UpdateUrlDTO): Promise<Url> {
+  async update(code: string, dto: UpdateUrlDTO, user: User): Promise<Url> {
     const updatedUrl = await this.database.url.update({
-      where: { shortened: code },
+      where: { shortened: code, userId: user.id },
       data: {
         original: dto.url,
       },

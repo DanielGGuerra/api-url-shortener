@@ -267,13 +267,23 @@ describe('UrlService', () => {
         url: 'updated_original_url',
       };
 
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
       const updatedUrl: Url = {
         id: 1,
         externalId: 'url_external_id',
         original: 'updated_original_url',
         shortened: 'valid_shortened',
         clicks: 0,
-        userId: null,
+        userId: user.id,
         createdAt: new Date(),
         updatedAt: new Date(),
         deletedAt: null,
@@ -281,13 +291,13 @@ describe('UrlService', () => {
 
       databaseMock.url.update.mockResolvedValue(updatedUrl);
 
-      const result = await urlService.update(code, dto);
+      const result = await urlService.update(code, dto, user);
 
       expect(result).toEqual(updatedUrl);
       expect(result.original).toBe(dto.url);
       expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
       expect(databaseMock.url.update).toHaveBeenCalledWith({
-        where: { shortened: code },
+        where: { shortened: code, userId: user.id },
         data: { original: dto.url },
       });
     });
