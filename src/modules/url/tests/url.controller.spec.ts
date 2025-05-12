@@ -4,6 +4,8 @@ import { UrlService } from '../url.service';
 import { Response } from 'express';
 import { NotFoundException } from '@nestjs/common';
 import { ResponseCreateDTO } from '../dto/response-create.dto';
+import { ResponseFindAllDTO } from '../dto/response-find-all.dto';
+import { Url } from '@prisma/client';
 
 describe('UrlController', () => {
   let urlController: UrlController;
@@ -12,6 +14,7 @@ describe('UrlController', () => {
     findOriginalURLByShortenedCode: jest.fn(),
     create: jest.fn(),
     incrementClicks: jest.fn(),
+    findAll: jest.fn(),
   };
 
   const responseMock = {
@@ -172,6 +175,51 @@ describe('UrlController', () => {
         updatedAt: urlResponse.updatedAt,
         deletedAt: urlResponse.deletedAt,
         userId: urlResponse.userId,
+      });
+    });
+  });
+
+  describe('findAll', () => {
+    it('should return all urls', async () => {
+      const page = 1;
+      const limit = 10;
+      const user = {
+        id: 1,
+        externalId: 'user_external_id',
+        email: 'test@example.com',
+        password: 'hashed_password',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      const urls: Url[] = [
+        {
+          id: 1,
+          externalId: 'url_external_id',
+          original: 'valid_original_url',
+          shortened: 'valid_shortened',
+          clicks: 0,
+          userId: user.id,
+          createdAt: new Date(),
+          updatedAt: null,
+          deletedAt: null,
+        },
+      ];
+
+      urlServiceMock.findAll.mockReturnValue({
+        data: urls,
+        total: urls.length,
+      });
+
+      const result = await urlController.findAll(user, page, limit);
+
+      expect(result).toBeInstanceOf(ResponseFindAllDTO);
+      expect(result).toEqual({
+        data: urls.map((url) => new ResponseCreateDTO(url)),
+        total: urls.length,
+        totalPages: Math.ceil(urls.length / limit),
+        page,
       });
     });
   });

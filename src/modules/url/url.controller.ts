@@ -4,7 +4,9 @@ import {
   Get,
   NotFoundException,
   Param,
+  ParseIntPipe,
   Post,
+  Query,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -15,6 +17,8 @@ import { Response } from 'express';
 import { OptionalJwtAuthGuard } from '../auth/guards/optional-jwt-auth.guard';
 import { GetUser } from '../../common/decorators/get-user.decorator';
 import { User } from '@prisma/client';
+import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard';
+import { ResponseFindAllDTO } from './dto/response-find-all.dto';
 
 @Controller('')
 export class UrlController {
@@ -43,5 +47,20 @@ export class UrlController {
   ): Promise<ResponseCreateDTO> {
     const shortenedUrl = await this.urlService.create(dto, user);
     return new ResponseCreateDTO(shortenedUrl);
+  }
+
+  @Get()
+  @UseGuards(JwtAuthGuard)
+  async findAll(
+    @GetUser() user: User,
+    @Query('page', new ParseIntPipe({ optional: true })) page: number = 1,
+    @Query('limit', new ParseIntPipe({ optional: true })) limit: number = 10,
+  ) {
+    const take = limit;
+    const skip = (page - 1) * limit;
+
+    const { data, total } = await this.urlService.findAll(user, take, skip);
+
+    return new ResponseFindAllDTO(data, total, page);
   }
 }
