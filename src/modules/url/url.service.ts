@@ -3,6 +3,7 @@ import { DatabaseService } from '../../database/database.service';
 import { CreateUrlDTO } from './dto/create-url.dto';
 import { Url, User } from '@prisma/client';
 import { generateCode } from '../../common/utils';
+import { UpdateUrlDTO } from './dto/update-url.dto';
 
 @Injectable()
 export class UrlService {
@@ -55,5 +56,16 @@ export class UrlService {
     const count = await this.database.url.count({ where });
 
     return { data: urls, total: count };
+  }
+
+  async update(code: string, dto: UpdateUrlDTO): Promise<Url> {
+    const updatedUrl = await this.database.url.update({
+      where: { shortened: code },
+      data: {
+        original: dto.url,
+      },
+    });
+
+    return updatedUrl;
   }
 }

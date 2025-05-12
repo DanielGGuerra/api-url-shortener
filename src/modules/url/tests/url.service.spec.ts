@@ -259,4 +259,37 @@ describe('UrlService', () => {
       });
     });
   });
+
+  describe('update', () => {
+    it('should update url', async () => {
+      const code = 'valid_shortened_code';
+      const dto = {
+        url: 'updated_original_url',
+      };
+
+      const updatedUrl: Url = {
+        id: 1,
+        externalId: 'url_external_id',
+        original: 'updated_original_url',
+        shortened: 'valid_shortened',
+        clicks: 0,
+        userId: null,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+        deletedAt: null,
+      };
+
+      databaseMock.url.update.mockResolvedValue(updatedUrl);
+
+      const result = await urlService.update(code, dto);
+
+      expect(result).toEqual(updatedUrl);
+      expect(result.original).toBe(dto.url);
+      expect(databaseMock.url.update).toHaveBeenCalledTimes(1);
+      expect(databaseMock.url.update).toHaveBeenCalledWith({
+        where: { shortened: code },
+        data: { original: dto.url },
+      });
+    });
+  });
 });
