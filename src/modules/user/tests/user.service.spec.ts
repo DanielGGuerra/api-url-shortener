@@ -59,6 +59,7 @@ describe('UserService', () => {
 
       (hashPassword as jest.Mock).mockResolvedValue(hashedPassword);
       databaseMock.user.create.mockResolvedValue(expectedUser);
+      databaseMock.user.findFirst.mockResolvedValue(null);
 
       const result = await service.create(createUserDto);
 
@@ -70,6 +71,29 @@ describe('UserService', () => {
           password: hashedPassword,
         },
       });
+    });
+
+    it('should throw BadRequestException when email already exists', async () => {
+      const createUserDto = {
+        email: 'existing@example.com',
+        password: 'password123',
+      };
+
+      const existingUser = {
+        id: 1,
+        email: createUserDto.email,
+        password: 'hashedPassword123',
+        createdAt: new Date(),
+        updatedAt: null,
+        deletedAt: null,
+      };
+
+      databaseMock.user.findFirst.mockResolvedValue(existingUser);
+
+      await expect(service.create(createUserDto)).rejects.toThrow(
+        'E-mail already exists',
+      );
+      expect(databaseMock.user.create).not.toHaveBeenCalled();
     });
   });
 
